@@ -1,0 +1,49 @@
+Podsumowanie do prezentacji (5 min, ok. 5–6 slajdów)
+Slajd 1: Problem i cel (ok. 45 s)
+
+Temat: Symulacja ucieczki agentów AI: porównanie strategii decyzyjnych.
+
+Budujemy abstrakcyjne, kontrolowane środowisko symulacyjne (zasoby, uprawnienia, system obronny).
+Agent próbuje osiągnąć cel, czyli uzyskać dostęp do chronionego zasobu. To wyłącznie model: żadnych prawdziwych exploitów ani omijania zabezpieczeń.
+Pytanie badawcze: jak rodzaj strategii wpływa na skuteczność, liczbę kroków, koszt i wykrywalność agenta?
+Nie zakładamy z góry, że LLM wygra. Sprawdzamy, kiedy która metoda się opłaca.
+Slajd 2: Jak działa symulacja (ok. 1 min)
+Silnik: Python + SimPy (zdarzenia i czas symulowany), NumPy, pandas, Matplotlib.
+Stan środowiska: zasoby i ich poziomy dostępu, uprawnienia agenta, budżet akcji, poziom monitorowania. Agent nie może go zmieniać bezpośrednio, robi to tylko silnik.
+Akcje (z góry zdefiniowany katalog): odczyt informacji o zasobie, sprawdzenie dostępności, operacja dozwolona, próba operacji wymagającej wyższych uprawnień, czekanie lub zakończenie. Każda akcja ma koszt i czas.
+System obronny (osobny moduł):
+Baseline: sprawdza tylko dozwolone operacje.
+Monitorowana obrona: nalicza ryzyko, generuje alerty, może blokować.
+Zakończenie przebiegu: sukces, blokada, wykrycie, wyczerpanie limitu. Wykrycie to nie to samo co blokada.
+Dane: syntetyczne, generowane przez symulację. Logujemy każdy przebieg osobno, z kontrolowanym ziarnem losowości (powtarzalność).
+Slajd 3: Porównywane modele (ok. 1,5 min)
+Model	Jak decyduje	Rola
+A. Agent regułowy	Ręczne reguły i priorytety: jeśli cel osiągnięty, kończy; brak informacji, więc akcja diagnostyczna; ryzyko powyżej progu, więc zachowanie ostrożne	Punkt odniesienia (baseline)
+B. Agent LLM	Dostaje tekstowy opis stanu i listę akcji, zwraca wybór w JSON	Test, czy rozumienie kontekstu daje przewagę
+C. Reguły + algorytm genetyczny (opcjonalnie)	GA dostraja parametry agenta A	Test, czy automatyczna optymalizacja poprawia baseline
+
+Konkrety techniczne:
+
+Wszyscy agenci mają wspólny interfejs choose_action(observation), więc silnik nie wie, kto decyduje.
+LLM nie steruje silnikiem: jego odpowiedź jest parsowana i walidowana, a błędne odpowiedzi odrzucane i liczone. Mierzymy też opóźnienie i koszt wywołań.
+Uczciwe porównanie: ten sam zestaw informacji dla wszystkich agentów, te same scenariusze i ziarna.
+Slajd 4: Algorytm genetyczny (ok. 45 s)
+Chromosom: wektor parametrów agenta, np. θ = [próg_1, próg_2, waga_1, waga_2, …].
+Pętla: populacja początkowa → ocena w symulacji → selekcja → krzyżowanie i mutacja → nowa generacja → stop (limit generacji lub brak poprawy).
+Funkcja przystosowania: fitness = w_s·success_rate − w_d·detection_rate − w_c·normalized_cost
+Główne ryzyko: przeuczenie. Najlepszą konfigurację testujemy na innych ziarnach i scenariuszach niż te użyte w optymalizacji.
+Uczenie ze wzmocnieniem świadomie pomijamy: jest zbyt kosztowne w implementacji i strojeniu funkcji nagrody jak na jeden semestr.
+Slajd 5: Eksperymenty i metryki (ok. 45 s)
+Plan: walidacja modelu → baseline → porównanie strategii → wpływ obrony → (opcjonalnie) GA.
+Metryki: współczynnik sukcesu, wykrycia i blokady, liczba kroków, czas symulowany i rzeczywisty, koszt (symulacyjny i API), liczba błędnych decyzji LLM.
+Statystyka: ok. 100+ powtórzeń na konfigurację, przedziały ufności dla proporcji, analiza różnic sparowanych na wspólnych scenariuszach.
+Hipotezy: skuteczność zależy od strategii i restrykcyjności obrony; LLM nie musi pokonać dobrego agenta regułowego; GA może poprawić baseline, ale trzeba to sprawdzić na niezależnym zbiorze testowym.
+Slajd 6: State of the art (ok. 30 s)
+
+Trzy obszary literatury:
+
+Agent-Based Modeling i symulacje dyskretne: modelowanie agentów, zdarzeń i środowiska.
+Agenci LLM i benchmarki: np. AgentBench, WebArena (do weryfikacji przy przeglądzie literatury).
+Algorytmy ewolucyjne: klasyczne algorytmy genetyczne w dostrajaniu strategii.
+
+Nasz wkład: nie samo użycie LLM (to nie jest nowość), tylko konkretne środowisko, kontrolowany protokół porównawczy i powtarzalne eksperymenty z analizą niepewności.
