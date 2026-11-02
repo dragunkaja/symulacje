@@ -316,6 +316,8 @@ Najważniejsze ryzyko to przeuczenie do scenariuszy użytych podczas optymalizac
 
 Materiały proponują opis środowiska w kategoriach częściowo obserwowalnego procesu decyzyjnego Markowa (POMDP). Ostateczne przyjęcie pełnego POMDP zależy od tego, czy agent rzeczywiście nie zna części stanu.
 
+(OLA: moim zdaniem to odpowiednie rozwiązanie, do tego ładnie matematycznie to opiszemy)
+
 | Element | Znaczenie w projekcie | Status |
 |---|---|---|
 | Stan `S` | Pełny, wewnętrzny stan środowiska | Do zdefiniowania |
@@ -325,14 +327,10 @@ Materiały proponują opis środowiska w kategoriach częściowo obserwowalnego 
 | Nagroda `R` | Nie jest konieczna, jeśli nie wdrażamy RL; wyniki można liczyć na końcu | Opcjonalna |
 | Zakończenie | Sukces/blokada albo wyczerpanie limitu | Do formalnego ustalenia |
 
-Wzorcowe rozróżnienie z interfejsu Gymnasium:
-- `terminated` — zakończenie wynikające z osiągnięcia celu lub blokady;
-- `truncated` — zakończenie wynikające z limitu budżetu, kroków lub czasu.
-
 Wykrycie jest osobną flagą i samo w sobie nie musi kończyć symulacji.
 
 **[DO UZUPEŁNIENIA]**
-- Czy model będzie formalnie traktowany jako POMDP, czy wystarczy opis stanów, obserwacji i przejść?
+- Czy model będzie formalnie traktowany jako POMDP, czy wystarczy opis stanów, obserwacji i przejść? (OLA: jestem za pomdp)
 - Jakie będą dokładne zbiory `S`, `O` i `A`?
 - Jakie prawdopodobieństwa lub reguły określą przejścia między stanami?
 
@@ -349,13 +347,13 @@ Proponowany cykl:
 8. zdarzenie i wynik kroku są zapisywane w logu.
 
 **[DO UZUPEŁNIENIA]**
-- Czy system obronny analizuje zdarzenie przed wykonaniem akcji, po wykonaniu, czy w obu momentach?
-- Czy czas symulowany aktualizuje się przed czy po ocenie obrony?
+- Czy system obronny analizuje zdarzenie przed wykonaniem akcji, po wykonaniu, czy w obu momentach? (OLA: po)
+- Czy czas symulowany aktualizuje się przed czy po ocenie obrony? (OLA: po)
 - Co dzieje się, gdy akcja jest niepoprawna?
 
 ## 6.3. Czas symulacji
 
-Materiały wskazują, że dla jednego agenta działającego turami wystarczy zwykła pętla krokowa. SimPy ma sens przede wszystkim przy wielu agentach, kolejkach lub nakładających się czasach akcji.
+Dla jednego agenta działającego turami wystarczy zwykła pętla krokowa.
 
 **Założenie robocze:** pierwsza wersja wykorzysta własny silnik krokowy w Pythonie, z jawnym zapisem czasu symulowanego. SimPy pozostaje możliwym rozszerzeniem, jeżeli pojawi się uzasadniona potrzeba modelowania współbieżnych zdarzeń.
 
