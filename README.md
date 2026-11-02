@@ -143,14 +143,15 @@ Projekt rozwijamy etapami. Kolejność pozwala najpierw uzyskać działającą i
 
 Szczegółowy podział prac, kryteria ukończenia etapów i sposób przygotowywania prezentacji postępów opisuje [docs/PROJECT_PLAN.md](docs/PROJECT_PLAN.md).
 
-## Proponowana struktura repozytorium
+## struktura repozytorium
 
 ```text
 .
 ├── README.md
 ├── CONTRIBUTING.md
 ├── pyproject.toml                 # konfiguracja projektu i narzędzi Python
-├── requirements.txt               # zależności, jeśli zespół wybierze ten sposób
+├── requirements.txt               # zależności
+
 ├── configs/                       # konfiguracje 36 scenariuszy i eksperymentów
 ├── docs/
 │   ├── state-of-the-art.md         # przegląd literatury
@@ -173,7 +174,7 @@ Szczegółowy podział prac, kryteria ukończenia etapów i sposób przygotowywa
     └── processed/
 ```
 
-Struktura jest docelowa – katalogi można dodawać w miarę implementacji. Nie twórzcie pustych modułów tylko po to, aby od razu odwzorować całe drzewo.
+
 
 ## Współpraca
 
