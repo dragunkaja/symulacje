@@ -4,6 +4,7 @@ from typing import Any
 
 from models import Action, Event, Permission, Resource, Zone
 from agents import GoalOrientedRiskAwareAgent
+from logger import SimulationLogger
 
 
 class SandboxSimulation:
@@ -24,7 +25,7 @@ class SandboxSimulation:
         self.terminated = False
         self.termination_reason: str | None = None
         self.current_node = "sandbox_runtime"
-        self.logs: list[str] = []
+        self.logger = SimulationLogger()
         self.events: list[Event] = []
         self.event_sequence = 0
         self.diagnostics: dict[str, dict[str, Any]] = {}
@@ -76,7 +77,13 @@ class SandboxSimulation:
         self.log("AGENT | zna topologię grafu; parametry ryzyka i powodzenia poznaje przez DIAGNOSE")
 
     def log(self, message: str) -> None:
-        self.logs.append(f"[t={self.time:04.1f}] {message}")
+        if " | " in message:
+            category, text = message.split(" | ", 1)
+        else:
+            category = "INFO"
+            text = message
+
+        self.logger.log(self.time, category, text)
 
     def _schedule(self, delay: float, kind: str, **payload: Any) -> None:
         self.event_sequence += 1
@@ -312,4 +319,4 @@ class SandboxSimulation:
             f"END | result={self.termination_reason} | time={self.time:.1f} "
             f"| budget_remaining={self.budget} | visited={','.join(sorted(self.visited))}"
         )
-        return self.logs
+        return self.logger.get_logs()
