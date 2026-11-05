@@ -78,6 +78,11 @@ Agent obserwuje wybrane informacje o środowisku, wybiera akcję, a środowisko 
 
 ## 3.2. Zasoby
 
+Zasób = węzeł grafu
+zasób daje access_level
+zasób moze byc goal lub nie
+
+
 **[DO UZUPEŁNIENIA]**
 - Jakie zasoby występują w symulacji? (OLA: mozna się tu pobawić, nazywać je inaczej w kazdym scenariuszu)
 - Ile zasobów będzie zawierał pojedynczy scenariusz? (OLA: zalezne od poziomu rozbudowania/trudności scenariusza)

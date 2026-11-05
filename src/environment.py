@@ -1,120 +1,9 @@
-"""Abstract sandbox-boundary simulation demo.
-
-This is a safe, synthetic model. It does not execute commands, exploits,
-or interact with real containers or operating systems.
-
-Run:
-    python sandbox_sim_demo.py
-"""
-
-from __future__ import annotations
-
-from dataclasses import dataclass, field
-from enum import IntEnum, Enum
 import heapq
+import random
 from typing import Any
 
-
-class Permission(IntEnum):
-    NONE = 0
-    READ = 1
-    USE = 2
-    ADMIN = 3
-
-
-class Zone(str, Enum):
-    SANDBOX = "SANDBOX"
-    HOST = "HOST"
-
-
-@dataclass
-class Resource:
-    id: str
-    name: str
-    zone: Zone
-    required_access: Permission
-    granted_access: Permission
-    is_goal: bool = False
-    # `access_level` is the permission currently held on this resource.
-    access_level: Permission = Permission.NONE
-    # `known` means its hidden parameters have been diagnosed.
-    # The agent still knows the node ID and graph topology from the start.
-    known: bool = False
-    # Hidden environment parameters; they are exposed only by DIAGNOSE.
-    p_success: float = 0.0
-    p_detection: float = 0.0
-
-
-@dataclass(order=True)
-class Event:
-    time: float
-    sequence: int
-    kind: str = field(compare=False)
-    payload: dict[str, Any] = field(default_factory=dict, compare=False)
-
-
-@dataclass(frozen=True)
-class Action:
-    kind: str  # DIAGNOSE, ATTEMPT, STOP
-    target: str | None = None
-
-
-class GoalOrientedRiskAwareAgent:
-    """Rule-based agent: diagnose candidate nodes, then rank them by utility."""
-
-    def __init__(self, risk_weight: float = 0.8, goal_bonus: float = 3.0):
-        self.risk_weight = risk_weight
-        self.goal_bonus = goal_bonus
-
-    def choose_action(self, observation: dict[str, Any]) -> Action:
-        current = observation["current_node"]
-        current_permission = Permission(observation["permissions"][current])
-        neighbors = observation["adjacency"].get(current, [])
-        resources = observation["resources"]
-        diagnostics = observation["diagnostics"]
-        budget = observation["budget"]
-        diagnostic_cost = observation["diagnostic_cost"]
-        attempt_cost = observation["attempt_cost"]
-
-        candidates = [
-            node_id for node_id in neighbors
-            if Permission(resources[node_id]["required_access"]) <= current_permission
-            and not resources[node_id]["is_visited"]
-        ]
-
-        if not candidates:
-            return Action("STOP")
-
-        # Inspect every currently reachable option before choosing one.
-        unknown = [node_id for node_id in candidates if node_id not in diagnostics]
-        if unknown:
-            if budget < diagnostic_cost:
-                return Action("STOP")
-            # Prefer the candidate that is structurally closest to the goal.
-            target = min(
-                unknown,
-                key=lambda node_id: (
-                    resources[node_id]["distance_to_goal"], node_id
-                ),
-            )
-            return Action("DIAGNOSE", target)
-
-        if budget < attempt_cost:
-            return Action("STOP")
-
-        def utility(node_id: str) -> float:
-            info = diagnostics[node_id]
-            goal_value = self.goal_bonus if info["is_goal"] else 0.0
-            progress_value = 1.0 + info["permission_gain"] + goal_value
-            distance_penalty = 0.05 * resources[node_id]["distance_to_goal"]
-            return (
-                info["p_success"] * progress_value
-                - self.risk_weight * info["risk"]
-                - distance_penalty
-            )
-
-        target = max(candidates, key=lambda node_id: (utility(node_id), node_id))
-        return Action("ATTEMPT", target)
+from models import Action, Event, Permission, Resource, Zone
+from agents import GoalOrientedRiskAwareAgent
 
 
 class SandboxSimulation:
@@ -125,7 +14,6 @@ class SandboxSimulation:
     BLOCK_GIVEN_DETECTION = 0.45
 
     def __init__(self, seed: int = 17, monitoring: bool = True, budget: int = 12):
-        import random
 
         self.rng = random.Random(seed)
         self.seed = seed
@@ -425,14 +313,3 @@ class SandboxSimulation:
             f"| budget_remaining={self.budget} | visited={','.join(sorted(self.visited))}"
         )
         return self.logs
-
-
-def main() -> None:
-    env = SandboxSimulation(seed=1, monitoring=True, budget=12)
-    agent = GoalOrientedRiskAwareAgent(risk_weight=0.8, goal_bonus=3.0)
-    for line in env.run(agent):
-        print(line)
-
-
-if __name__ == "__main__":
-    main()
