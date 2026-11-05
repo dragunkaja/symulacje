@@ -13,8 +13,9 @@ Run:
 def main() -> None:
     env = SandboxSimulation(seed=1, monitoring=True, budget=12)
     agent = GoalOrientedRiskAwareAgent(risk_weight=0.8, goal_bonus=3.0)
-    for line in env.run(agent):
-        print(line)
+    
+    env.run(agent)
+    env.logger.display()
 
 
 if __name__ == "__main__":
