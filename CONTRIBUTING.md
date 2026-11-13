@@ -9,12 +9,6 @@
 
 ## Zasady implementacji
 
-- Silnik środowiska odpowiada za zmianę stanu. Agent zwraca wyłącznie propozycję akcji.
-- Każda nowa reguła przejścia powinna mieć test, w tym – gdy ma to sens – test warunku brzegowego.
-- Parametry eksperymentów przechowujemy w konfiguracji, nie jako rozproszone stałe w kodzie.
-- Wyniki powinny zawierać identyfikator agenta, scenariusza, seed i wersję/identyfikator konfiguracji.
-- Zmiany wpływające na porównywalność eksperymentów opisujemy w dokumentacji decyzji.
-- Zachowujemy czytelne nazwy i małe funkcje; nie łączymy logiki środowiska, agenta i analizy w jednym module.
 
 ## Pull Request
 
