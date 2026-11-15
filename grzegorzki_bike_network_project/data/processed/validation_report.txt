@@ -1,0 +1,27 @@
+GRAPH VALIDATION REPORT
+=======================
+Graph type: MultiDiGraph
+Directed: True
+Multigraph: True
+Nodes: 4981
+Directed edges: 9622
+Weakly connected components: 94
+Largest weak component: 4636 nodes
+Strongly connected components: 177
+Largest strong component: 4514 nodes
+Edges missing length: 0
+Edges with non-positive length: 0
+Edges tagged access=no: 5
+Edges tagged bicycle=no: 0
+
+SENSOR DISTANCES
+----------------
+Bulwary: 0.35 m; OK - inspect on map
+Dworzec Główny: 0.18 m; OK - inspect on map
+Grzegórzecka: 20.01 m; OK - inspect on map
+Kopernika: 30.14 m; WARNING - check coordinate/network
+Kotlarska: 2.89 m; OK - inspect on map
+Mogilska: 2.70 m; OK - inspect on map
+
+Directed reachability matrix saved to sensor_reachability.csv.
+Reachability is provisional until sensor-edge candidates are manually confirmed.

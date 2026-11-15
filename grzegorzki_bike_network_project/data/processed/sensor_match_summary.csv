@@ -1,0 +1,7 @@
+﻿sensor_id,nearest_distance_m,candidate_count,status
+Bulwary,0.35,2,REVIEW_ON_MAP
+Dworzec Główny,0.18,2,REVIEW_ON_MAP
+Mogilska,2.7,2,REVIEW_ON_MAP
+Kopernika,30.14,2,CHECK_COORDINATE_OR_NETWORK
+Grzegórzecka,20.01,2,REVIEW_ON_MAP
+Kotlarska,2.89,2,REVIEW_ON_MAP

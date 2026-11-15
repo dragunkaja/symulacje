@@ -1,0 +1,7 @@
+﻿source_sensor,Bulwary,Dworzec Główny,Grzegórzecka,Kopernika,Kotlarska,Mogilska
+Bulwary,True,False,False,False,False,False
+Dworzec Główny,False,True,False,False,False,False
+Grzegórzecka,False,False,True,False,False,False
+Kopernika,False,False,False,True,False,False
+Kotlarska,False,False,False,False,True,False
+Mogilska,False,False,False,False,False,True

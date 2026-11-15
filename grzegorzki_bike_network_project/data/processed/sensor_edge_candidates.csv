@@ -1,0 +1,13 @@
+﻿sensor_id,candidate_rank,distance_m,u,v,key,osmid,name,highway,oneway,access,bicycle,cycleway,surface,direction,use_in_model,confirmed,status
+Bulwary,1,0.35,283117418,5913431986,0,1278271468,nan,path,False,nan,designated,nan,asphalt,unknown,False,False,REVIEW_ON_MAP
+Bulwary,2,0.35,5913431986,283117418,0,1278271468,nan,path,False,nan,designated,nan,asphalt,unknown,False,False,REVIEW_ON_MAP
+Dworzec Główny,1,0.18,269325520,581234692,0,821621417|683442314|45581610|242515147|1240106709|46679229|1080033406,nan,path,False,nan,designated,nan,paved|concrete|paving_stones|asphalt,unknown,False,False,REVIEW_ON_MAP
+Dworzec Główny,2,0.18,581234692,269325520,0,821621417|45581610|242515147|683442314|1240106709|46679229|1080033406,nan,path,False,nan,designated,nan,paved|concrete|paving_stones|asphalt,unknown,False,False,REVIEW_ON_MAP
+Mogilska,1,2.7,316293924,596220573,0,1370726120,nan,path,False,nan,designated,nan,paved,unknown,False,False,REVIEW_ON_MAP
+Mogilska,2,2.7,596220573,316293924,0,1370726120,nan,path,False,nan,designated,nan,paved,unknown,False,False,REVIEW_ON_MAP
+Kopernika,1,30.14,3068397464,14226982442,0,302589881|1563111837,nan,service,False,nan,nan,nan,nan,unknown,False,False,CHECK_COORDINATE_OR_NETWORK
+Kopernika,2,30.14,14226982442,3068397464,0,302589881|1563111837,nan,service,False,nan,nan,nan,nan,unknown,False,False,CHECK_COORDINATE_OR_NETWORK
+Grzegórzecka,1,20.01,1664571132,3723589970,0,25805689,Rzeźnicza,residential,False,nan,nan,nan,asphalt,unknown,False,False,REVIEW_ON_MAP
+Grzegórzecka,2,20.01,3723589970,1664571132,0,25805689,Rzeźnicza,residential,False,nan,nan,nan,asphalt,unknown,False,False,REVIEW_ON_MAP
+Kotlarska,1,2.89,5405199812,1751465868,0,163714016,nan,path,False,nan,designated,nan,paving_stones,unknown,False,False,REVIEW_ON_MAP
+Kotlarska,2,2.89,1751465868,5405199812,0,163714016,nan,path,False,nan,designated,nan,paving_stones,unknown,False,False,REVIEW_ON_MAP
