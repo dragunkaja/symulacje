@@ -1,5 +1,0 @@
-sensor_name,candidate_edges,edges_with_traffic,simulated_passages,strategy,sensor,observed_avg,observed_median,observed_min,observed_max,absolute_error,relative_error_pct
-Grzegórzecka,2,2,141,shortest,Grzegórzecka,116.0,120.0,36.0,148.0,25.0,21.551724137931032
-Kotlarska,2,2,46,shortest,Kotlarska,126.0,128.0,42.0,171.0,80.0,63.49206349206349
-Grzegórzecka,2,2,318,bike_preferred,Grzegórzecka,116.0,120.0,36.0,148.0,202.0,174.13793103448276
-Kotlarska,2,2,62,bike_preferred,Kotlarska,126.0,128.0,42.0,171.0,64.0,50.79365079365079
