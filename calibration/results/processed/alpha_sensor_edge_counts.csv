@@ -1,0 +1,9 @@
+sensor_id,sensor_name,coord_source,longitude,latitude,candidate_rank,distance_m,u,v,key,highway,name,length_m,in_largest_scc,confirmed,simulated_passages,strategy
+kotlarska,Kotlarska,metadane_licznikow.csv,19.959313,50.054638,1,0.04,595413007,595413013,0,path,,91.64422169797457,True,False,17,shortest
+kotlarska,Kotlarska,metadane_licznikow.csv,19.959313,50.054638,2,0.04,595413013,595413007,0,path,,91.64422169797457,True,False,29,shortest
+grzegorzecka,Grzegórzecka,metadane_licznikow.csv,19.957732,50.057353,1,0.28,3797258848,595413024,0,cycleway,,74.61043986760801,True,False,27,shortest
+grzegorzecka,Grzegórzecka,metadane_licznikow.csv,19.957732,50.057353,2,0.28,595413024,3797258848,0,cycleway,,74.61043986760802,True,False,114,shortest
+kotlarska,Kotlarska,metadane_licznikow.csv,19.959313,50.054638,1,0.04,595413007,595413013,0,path,,91.64422169797457,True,False,31,bike_preferred
+kotlarska,Kotlarska,metadane_licznikow.csv,19.959313,50.054638,2,0.04,595413013,595413007,0,path,,91.64422169797457,True,False,31,bike_preferred
+grzegorzecka,Grzegórzecka,metadane_licznikow.csv,19.957732,50.057353,1,0.28,3797258848,595413024,0,cycleway,,74.61043986760801,True,False,180,bike_preferred
+grzegorzecka,Grzegórzecka,metadane_licznikow.csv,19.957732,50.057353,2,0.28,595413024,3797258848,0,cycleway,,74.61043986760802,True,False,138,bike_preferred

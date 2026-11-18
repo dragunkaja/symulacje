@@ -15,15 +15,22 @@ import random
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
+import json
+from pyproj import Transformer
+from shapely.geometry import Point, shape
 
 import networkx as nx
 
-GRAPH_PATH = Path("data/raw/osm_kotlarska.graphml")
+GRAPH_PATH = Path("data/processed/osm_kotlarska_ztp.graphml")
+ZONES_PATH = Path("data/Rejony_komunikacyjne.geojson")
+MIN_NODES_PER_ZONE = 10
+MIN_TRIP_LENGTH_M = 300
+MAX_TRIP_LENGTH_M = 2500
 RESULTS_DIR = Path("results")
 SEED = 42
-N_CYCLISTS = 200  # PRZYKŁADOWA wartość, nie pochodzi z pomiarów
+N_CYCLISTS = 717  # PRZYKŁADOWA wartość, nie pochodzi z pomiarów
 SIMULATION_SECONDS = 3600
-
+BIKE_PREFERENCE_FACTOR = 0.7
 
 @dataclass(frozen=True)
 class Trip:
@@ -48,18 +55,67 @@ def load_network(path: Path) -> nx.MultiDiGraph:
           f"{len(graph.edges)} krawędzi")
     return graph
 
+def load_zones(graph: nx.MultiDiGraph) -> dict[str, list[str]]:
+    with ZONES_PATH.open(encoding="utf-8") as file:
+        data = json.load(file)
+
+    transformer = Transformer.from_crs(
+        "EPSG:4326",
+        "EPSG:2178",
+        always_xy=True
+    )
+
+    polygons = [
+        (
+            str(feature["properties"]["numer_rej"]),
+            shape(feature["geometry"])
+        )
+        for feature in data["features"]
+    ]
+
+    zones = {}
+
+    for node, attributes in graph.nodes(data=True):
+        x, y = transformer.transform(
+            float(attributes["x"]),
+            float(attributes["y"])
+        )
+
+        point = Point(x, y)
+
+        for zone_id, polygon in polygons:
+            if polygon.covers(point):
+                zones.setdefault(zone_id, []).append(node)
+                break
+
+    return {
+        zone_id: nodes
+        for zone_id, nodes in zones.items()
+        if len(nodes) >= MIN_NODES_PER_ZONE
+    }
 
 def edge_length(attributes: dict) -> float:
     return float(attributes["length"])
 
 
 def edge_cost(attributes: dict, strategy: str) -> float:
-    """Koszt trasy. Mnożnik 0.7 to WYŁĄCZNIE hipoteza do sprawdzenia."""
     length = edge_length(attributes)
-    highway = str(attributes.get("highway", "")).lower()
-    if strategy == "bike_preferred" and "cycleway" in highway:
-        return 0.7 * length
-    return length
+
+    if strategy == "shortest":
+        return length
+
+    if strategy == "bike_preferred":
+        ztp_bike = (
+            str(attributes.get("ztp_bike_infrastructure", "no")).lower()
+            == "yes"
+        )
+
+        if ztp_bike:
+            return BIKE_PREFERENCE_FACTOR * length
+
+        return length
+
+    raise ValueError("Nieznana strategia")
 
 
 def find_route(graph: nx.MultiDiGraph, origin: str,
@@ -79,31 +135,80 @@ def chosen_edge(graph: nx.MultiDiGraph, u: str, v: str,
     return min(graph[u][v].items(), key=lambda item: edge_cost(item[1], strategy))
 
 
-def draw_trips(graph: nx.MultiDiGraph, count: int,
-               seed: int = SEED) -> list[Trip]:
-    """Losowe OD = dane SYNTETYCZNE. Docelowo zastąpić rozkładem OD."""
+def draw_trips(
+    graph: nx.MultiDiGraph,
+    count: int,
+    seed: int = SEED
+) -> list[Trip]:
     rng = random.Random(seed)
-    nodes = list(graph.nodes)
-    trips: list[Trip] = []
-    attempts = 0
+    zones = load_zones(graph)
 
-    while len(trips) < count and attempts < count * 50:
-        attempts += 1
-        origin, destination = rng.sample(nodes, 2)
-        route = find_route(graph, origin, destination, "shortest")
-        length = sum(edge_length(chosen_edge(graph, u, v, "shortest")[1])
-                     for u, v in zip(route, route[1:]))
-        if not 300 <= length <= 2500:
-            continue
-        trips.append(Trip(
-            origin=origin,
-            destination=destination,
-            start_second=rng.randrange(0, 2400),
-            speed_kmh=rng.uniform(12, 18),  # założenie demonstracyjne
-        ))
+    zone_ids = sorted(zones)
 
-    if len(trips) < count:
-        raise ValueError("Za mało tras o zadanej długości: zmień progi w draw_trips.")
+    od_pairs = [
+        (origin, destination)
+        for origin in zone_ids
+        for destination in zone_ids
+        if origin != destination
+    ]
+
+    if not od_pairs:
+        raise ValueError("Nie znaleziono poprawnych par OD.")
+
+    rng.shuffle(od_pairs)
+
+    base_count, remainder = divmod(count, len(od_pairs))
+
+    trips = []
+
+    for pair_index, (origin_zone, destination_zone) in enumerate(od_pairs):
+        target_count = base_count + (pair_index < remainder)
+        accepted = 0
+        attempts = 0
+        max_attempts = max(target_count * 100, 100)
+
+        while accepted < target_count and attempts < max_attempts:
+            attempts += 1
+
+            origin = rng.choice(zones[origin_zone])
+            destination = rng.choice(zones[destination_zone])
+
+            try:
+                route = find_route(
+                    graph,
+                    origin,
+                    destination,
+                    "shortest"
+                )
+            except nx.NetworkXNoPath:
+                continue
+
+            length = sum(
+                edge_length(chosen_edge(graph, u, v, "shortest")[1])
+                for u, v in zip(route, route[1:])
+            )
+
+            if not MIN_TRIP_LENGTH_M <= length <= MAX_TRIP_LENGTH_M:
+                continue
+
+            trips.append(
+                Trip(
+                    origin=origin,
+                    destination=destination,
+                    start_second=rng.randrange(0, SIMULATION_SECONDS),
+                    speed_kmh=rng.uniform(12, 18)
+                )
+            )
+
+            accepted += 1
+
+        if accepted < target_count:
+            raise ValueError(
+                f"Nie udało się wygenerować podróży dla OD "
+                f"{origin_zone} -> {destination_zone}. "
+                f"Uzyskano {accepted}/{target_count}."
+            )
+
     return trips
 
 

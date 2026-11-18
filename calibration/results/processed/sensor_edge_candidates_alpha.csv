@@ -1,0 +1,9 @@
+sensor_id,sensor_name,coord_source,longitude,latitude,candidate_rank,distance_m,u,v,key,highway,name,length_m,in_largest_scc,confirmed
+kotlarska,Kotlarska,metadane_licznikow.csv,19.959313,50.054638,1,0.04,595413007,595413013,0,path,,91.64422169797457,True,False
+kotlarska,Kotlarska,metadane_licznikow.csv,19.959313,50.054638,2,0.04,595413013,595413007,0,path,,91.64422169797457,True,False
+grzegorzecka,Grzegórzecka,metadane_licznikow.csv,19.957732,50.057353,1,0.28,3797258848,595413024,0,cycleway,,74.61043986760801,True,False
+grzegorzecka,Grzegórzecka,metadane_licznikow.csv,19.957732,50.057353,2,0.28,595413024,3797258848,0,cycleway,,74.61043986760802,True,False
+grzegórzecka,Grzegórzecka,wspolrzedne_licznikow.csv,19.9567,50.0573,1,20.01,1664571132,3723589970,0,residential,Rzeźnicza,21.8400859341294,True,False
+grzegórzecka,Grzegórzecka,wspolrzedne_licznikow.csv,19.9567,50.0573,2,20.01,3723589970,1664571132,0,residential,Rzeźnicza,21.8400859341294,True,False
+kotlarska,Kotlarska,wspolrzedne_licznikow.csv,19.9598,50.0548,1,2.89,1751465868,5405199812,0,path,,136.94043494322926,True,False
+kotlarska,Kotlarska,wspolrzedne_licznikow.csv,19.9598,50.0548,2,2.89,5405199812,1751465868,0,path,,136.9404349432293,True,False

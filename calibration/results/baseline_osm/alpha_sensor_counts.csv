@@ -1,0 +1,5 @@
+sensor_name,candidate_edges,edges_with_traffic,simulated_passages,strategy
+Grzegórzecka,2,2,40,shortest
+Kotlarska,2,2,19,shortest
+Grzegórzecka,2,2,80,bike_preferred
+Kotlarska,2,2,28,bike_preferred
